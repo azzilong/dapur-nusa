@@ -61,7 +61,7 @@ function stagePlay() {
   kitchen.chop.item = 'chicken';
   kitchen.chop.progress = 0.7;
   kitchen.carrying = ['rice'];
-  kitchen.player.x = 385; kitchen.player.y = 300; kitchen.player.face = 1;
+  kitchen.player.x = 385; kitchen.player.y = 335; kitchen.player.face = 1;
 }
 
 function stageServe() {
