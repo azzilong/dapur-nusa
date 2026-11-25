@@ -141,6 +141,270 @@ function drawFloor(ctx) {
   ctx.beginPath(); ctx.arc(1030, 168, 10, 0, Math.PI * 2); ctx.fill();
 }
 
+// --- kitchen decor: fills the empty middle floor + wall gaps (flat vector) ----
+// Everything here is floor dressing only: no gameplay, no HUD changes. The
+// big mat is flat (the chef walks over it); sacks, baskets and pots hug the
+// bottom edge and the right-centre gap so no walk lane or station is covered.
+function drawDecor(ctx) {
+  // Dark-wood wall band under the HUD: the kitchen finally has a "room".
+  ctx.fillStyle = '#6e4520';
+  ctx.fillRect(0, 104, VIEW_W, 22);
+  ctx.fillStyle = '#8a5a2b';
+  ctx.fillRect(0, 104, VIEW_W, 3);
+  ctx.fillStyle = '#d9a441';
+  ctx.fillRect(0, 124, VIEW_W, 2);
+  // Hanging lamps in the gaps between stations: cord, warm shade, glow.
+  for (const lx of [280, 515]) {
+    ctx.strokeStyle = '#5a4632'; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(lx, 126); ctx.lineTo(lx, 152); ctx.stroke();
+    ctx.fillStyle = 'rgba(242,183,5,0.18)';
+    ctx.beginPath(); ctx.arc(lx, 174, 34, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#d9a441';
+    ctx.beginPath();
+    ctx.moveTo(lx - 16, 152); ctx.lineTo(lx + 16, 152);
+    ctx.lineTo(lx + 10, 174); ctx.lineTo(lx - 10, 174);
+    ctx.closePath(); ctx.fill();
+    ctx.fillStyle = '#f2b705';
+    ctx.beginPath(); ctx.arc(lx, 178, 7, 0, Math.PI * 2); ctx.fill();
+  }
+  // Shelf with pot/pan silhouettes above the stove, below the wall band.
+  ctx.fillStyle = '#8a5a2b';
+  ctx.fillRect(600, 130, 180, 6);
+  ctx.fillStyle = '#6e4520';
+  ctx.fillRect(612, 136, 4, 6); ctx.fillRect(764, 136, 4, 6);
+  ctx.fillStyle = '#3d4450'; // hanging pans + a small pot, dark silhouettes
+  ctx.beginPath(); ctx.arc(640, 146, 8, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(700, 146, 9, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(752, 146, 8, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#6b7280';
+  ctx.beginPath(); ctx.arc(700, 144, 5, 0, Math.PI * 2); ctx.fill();
+  // Round wall clock, top-right, right of the trash station.
+  ctx.fillStyle = '#2b1d0e';
+  ctx.beginPath(); ctx.arc(1225, 140, 19, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#fdf6e3';
+  ctx.beginPath(); ctx.arc(1225, 140, 15, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = '#2b1d0e'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(1225, 140); ctx.lineTo(1225, 129); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(1225, 140); ctx.lineTo(1234, 143); ctx.stroke();
+  ctx.fillStyle = '#d64541';
+  ctx.beginPath(); ctx.arc(1225, 140, 2, 0, Math.PI * 2); ctx.fill();
+  // Framed MENU HARI INI strip under the band, left of the clock.
+  ctx.fillStyle = '#6e4520';
+  rr(ctx, 1040, 130, 140, 18, 4); ctx.fill();
+  ctx.strokeStyle = '#d9a441'; ctx.lineWidth = 2; ctx.stroke();
+  text(ctx, 'MENU HARI INI', 1110, 140, 11, COLORS.gold, 'bold', 'center');
+  // Chili garland strung across the wall gap left of the board.
+  ctx.strokeStyle = '#6e4520'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(140, 132);
+  ctx.quadraticCurveTo(210, 152, 282, 132); ctx.stroke();
+  for (let i = 0; i < 7; i++) {
+    const gx = 150 + i * 20;
+    const gy = 138 + Math.sin((i / 6) * Math.PI) * 8;
+    ctx.fillStyle = '#d63c2f';
+    ctx.beginPath(); ctx.ellipse(gx, gy + 6, 5, 9, 0.3, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#3d9b4f';
+    ctx.fillRect(gx - 1, gy - 2, 3, 4);
+  }
+  // Side table with stacked bowls + a small pot, left of the board.
+  ctx.fillStyle = '#6e4520';
+  ctx.fillRect(148, 232, 8, 20); ctx.fillRect(266, 232, 8, 20);
+  ctx.fillStyle = '#8a5a2b';
+  rr(ctx, 140, 214, 142, 20, 6); ctx.fill();
+  ctx.fillStyle = '#b5773a';
+  rr(ctx, 140, 214, 142, 8, 4); ctx.fill();
+  for (let i = 0; i < 3; i++) { // stacked bowls, alternating glaze
+    ctx.fillStyle = i % 2 ? '#2f6f5e' : '#fdf6e3';
+    ctx.beginPath(); ctx.arc(178, 206 - i * 9, 16 - i * 2, 0, Math.PI); ctx.fill();
+  }
+  ctx.fillStyle = '#3d4450'; // small pot with lid
+  ctx.beginPath(); ctx.arc(248, 200, 14, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#6b7280';
+  ctx.beginPath(); ctx.arc(248, 190, 14, Math.PI, 0); ctx.fill();
+  // Two woven floor mats, centre floor (flat — the chef walks over them).
+  ctx.fillStyle = '#2f6f5e'; // teal runner above the big mat
+  rr(ctx, 520, 340, 240, 50, 8); ctx.fill();
+  ctx.fillStyle = '#3a8a72';
+  rr(ctx, 530, 348, 220, 34, 6); ctx.fill();
+  ctx.strokeStyle = '#f2b705'; ctx.lineWidth = 2;
+  for (let i = 0; i < 4; i++) {
+    ctx.beginPath();
+    ctx.moveTo(565 + i * 52, 365);
+    ctx.lineTo(578 + i * 52, 354); ctx.lineTo(591 + i * 52, 365); ctx.lineTo(578 + i * 52, 376);
+    ctx.closePath(); ctx.stroke();
+  }
+  ctx.fillStyle = '#c98a4e'; // big terracotta mat
+  rr(ctx, 480, 400, 320, 145, 10); ctx.fill();
+  ctx.fillStyle = '#e8b07d';
+  rr(ctx, 492, 412, 296, 121, 8); ctx.fill();
+  ctx.strokeStyle = '#a06a2e'; ctx.lineWidth = 2;
+  for (let i = 0; i < 5; i++) {
+    ctx.beginPath();
+    ctx.moveTo(520 + i * 52, 472);
+    ctx.lineTo(546 + i * 52, 446); ctx.lineTo(572 + i * 52, 472); ctx.lineTo(546 + i * 52, 498);
+    ctx.closePath(); ctx.stroke();
+  }
+  ctx.strokeStyle = '#2f6f5e'; ctx.lineWidth = 2; // teal inner border
+  rr(ctx, 504, 424, 272, 97, 6); ctx.stroke();
+  // Scattered chillies + flour dust: floor decals around the mats.
+  ctx.fillStyle = '#d63c2f';
+  for (const [cx, cy, r] of [[500, 392, 0.4], [786, 398, -0.4], [652, 552, 0.2]]) {
+    ctx.beginPath(); ctx.ellipse(cx, cy, 5, 9, r, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.fillStyle = 'rgba(255,248,234,0.85)'; // flour dust
+  for (const [fx, fy] of [[540, 352], [700, 352], [745, 382], [500, 530], [790, 530]]) {
+    ctx.beginPath(); ctx.arc(fx, fy, 3, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(fx + 8, fy + 4, 2, 0, Math.PI * 2); ctx.fill();
+  }
+  // Side counter with spice bowls, mid-right, below the recipe poster.
+  ctx.fillStyle = 'rgba(0,0,0,0.15)';
+  ctx.beginPath(); ctx.ellipse(900, 434, 78, 8, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#8a5a2b'; // counter body
+  rr(ctx, 830, 360, 140, 70, 8); ctx.fill();
+  ctx.fillStyle = '#b5773a'; // counter top
+  rr(ctx, 830, 360, 140, 14, 6); ctx.fill();
+  ctx.fillStyle = '#6e4520'; // legs
+  ctx.fillRect(838, 424, 8, 10); ctx.fillRect(954, 424, 8, 10);
+  // Spice bowls on the counter: red spice, limes, shallots.
+  ctx.fillStyle = '#fdf6e3';
+  ctx.beginPath(); ctx.arc(856, 352, 11, 0, Math.PI); ctx.fill();
+  ctx.fillStyle = '#d64541';
+  ctx.beginPath(); ctx.arc(856, 350, 8, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#fdf6e3';
+  ctx.beginPath(); ctx.arc(886, 352, 11, 0, Math.PI); ctx.fill();
+  ctx.fillStyle = '#7be495';
+  ctx.beginPath(); ctx.arc(883, 348, 5, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(890, 351, 5, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#fdf6e3';
+  ctx.beginPath(); ctx.arc(916, 352, 11, 0, Math.PI); ctx.fill();
+  ctx.fillStyle = '#c98a4e';
+  ctx.beginPath(); ctx.arc(913, 349, 5, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(920, 351, 5, 0, Math.PI * 2); ctx.fill();
+  // Small steaming pot on the counter (second motion cue).
+  ctx.fillStyle = '#3d4450';
+  ctx.beginPath(); ctx.arc(950, 348, 13, 0, Math.PI); ctx.fill();
+  ctx.fillRect(937, 348, 26, 8);
+  ctx.fillStyle = '#6b7280';
+  ctx.beginPath(); ctx.arc(950, 348, 13, Math.PI, 0); ctx.fill();
+  ctx.strokeStyle = 'rgba(255,255,255,0.85)'; ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(946, 334); ctx.quadraticCurveTo(942, 324, 946, 316); ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(954, 334); ctx.quadraticCurveTo(958, 324, 954, 316); ctx.stroke();
+  // Hanging rail with ladles above the counter.
+  ctx.strokeStyle = '#5a4632'; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.moveTo(840, 302); ctx.lineTo(960, 302); ctx.stroke();
+  ctx.fillStyle = '#5a4632';
+  ctx.fillRect(846, 302, 3, 10); ctx.fillRect(948, 302, 3, 10);
+  ctx.strokeStyle = '#8a5a2b'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(872, 302); ctx.lineTo(872, 326); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(920, 302); ctx.lineTo(920, 326); ctx.stroke();
+  ctx.fillStyle = '#c8ccd4';
+  ctx.beginPath(); ctx.arc(872, 330, 6, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(920, 330, 6, 0, Math.PI * 2); ctx.fill();
+  // Rice sacks along the mid-left edge, between crates and talenan.
+  for (const [sx, sy, sw] of [[195, 385, 56], [200, 475, 60]]) {
+    ctx.fillStyle = 'rgba(0,0,0,0.15)';
+    ctx.beginPath(); ctx.ellipse(sx, sy + 26, sw * 0.6, 7, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#d9c9a3';
+    rr(ctx, sx - sw / 2, sy - 22, sw, 48, 10); ctx.fill();
+    ctx.strokeStyle = '#a08c5f'; ctx.lineWidth = 2;
+    rr(ctx, sx - sw / 2, sy - 22, sw, 48, 10); ctx.stroke();
+    ctx.fillStyle = '#c9b183'; // tied neck
+    ctx.beginPath();
+    ctx.moveTo(sx - 12, sy - 20); ctx.lineTo(sx + 12, sy - 20);
+    ctx.lineTo(sx + 7, sy - 34); ctx.lineTo(sx - 7, sy - 34);
+    ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = '#8a5a2b'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(sx - 10, sy - 24); ctx.lineTo(sx + 10, sy - 24); ctx.stroke();
+    ctx.fillStyle = '#f5f0dc'; // spilled grains
+    for (let i = 0; i < 5; i++) {
+      ctx.beginPath(); ctx.arc(sx - 18 + i * 9, sy + 30, 2.5, 0, Math.PI * 2); ctx.fill();
+    }
+  }
+  // Chili baskets: woven basket mounded with red chilies.
+  for (const [bx, by] of [[215, 545], [600, 628]]) {
+    ctx.fillStyle = 'rgba(0,0,0,0.15)';
+    ctx.beginPath(); ctx.ellipse(bx, by + 16, 34, 6, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#a06a2e';
+    ctx.beginPath(); ctx.arc(bx, by + 4, 30, 0, Math.PI); ctx.fill();
+    ctx.fillStyle = '#8a5a2e';
+    ctx.fillRect(bx - 30, by + 2, 60, 6);
+    ctx.fillStyle = '#d63c2f';
+    for (let i = -2; i <= 2; i++) {
+      ctx.beginPath(); ctx.ellipse(bx + i * 11, by - 4, 6, 10, i * 0.25, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.fillStyle = '#3d9b4f';
+    for (let i = -2; i <= 2; i++) ctx.fillRect(bx + i * 11 - 1, by - 14, 3, 5);
+  }
+  // Small round woven mat, bottom-centre floor.
+  ctx.fillStyle = '#c98a4e';
+  ctx.beginPath(); ctx.arc(730, 620, 38, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#e8b07d';
+  ctx.beginPath(); ctx.arc(730, 620, 30, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = '#a06a2e'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.arc(730, 620, 20, 0, Math.PI * 2); ctx.stroke();
+  ctx.beginPath(); ctx.arc(730, 620, 10, 0, Math.PI * 2); ctx.stroke();
+  // Sink + clean plates + potted plant, bottom-left corner.
+  ctx.fillStyle = '#8a5a2b'; // sink backsplash + basin
+  rr(ctx, 28, 600, 112, 14, 4); ctx.fill();
+  ctx.fillStyle = '#c8ccd4';
+  rr(ctx, 28, 614, 112, 62, 8); ctx.fill();
+  ctx.fillStyle = '#9aa0ab';
+  rr(ctx, 38, 622, 92, 46, 6); ctx.fill();
+  ctx.fillStyle = '#6b7280'; // faucet
+  ctx.fillRect(126, 600, 6, 22);
+  ctx.fillRect(108, 600, 24, 6);
+  ctx.fillRect(108, 600, 6, 12);
+  ctx.fillStyle = '#7fb3d5'; // water
+  ctx.beginPath(); ctx.arc(84, 645, 26, 0, Math.PI); ctx.fill();
+  // Stack of clean plates beside the sink.
+  for (let i = 0; i < 3; i++) {
+    ctx.fillStyle = '#fdf6e3';
+    ctx.beginPath(); ctx.ellipse(188, 672 - i * 7, 26, 8, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = '#d9c9a3'; ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+  // Potted plant.
+  ctx.fillStyle = '#c65a1e';
+  ctx.beginPath(); ctx.moveTo(232, 652); ctx.lineTo(258, 652); ctx.lineTo(253, 676); ctx.lineTo(237, 676); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = '#58a34a';
+  ctx.beginPath(); ctx.ellipse(245, 640, 7, 14, 0.3, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(238, 644, 6, 11, -0.4, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(253, 644, 6, 11, 0.4, 0, Math.PI * 2); ctx.fill();
+  // Small crate of greens, bottom band right of the round mat.
+  ctx.fillStyle = '#a06a2e';
+  rr(ctx, 820, 612, 80, 56, 6); ctx.fill();
+  ctx.fillStyle = '#8a5a2e';
+  rr(ctx, 820, 612, 80, 12, 6); ctx.fill();
+  ctx.fillStyle = '#58a34a';
+  ctx.beginPath(); ctx.arc(845, 606, 12, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(868, 602, 13, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(888, 608, 11, 0, Math.PI * 2); ctx.fill();
+  // Small dining corner, bottom-right, below the serving table.
+  ctx.fillStyle = 'rgba(0,0,0,0.15)';
+  ctx.beginPath(); ctx.ellipse(1140, 668, 52, 8, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#fdf6e3'; // round table top
+  ctx.beginPath(); ctx.arc(1140, 625, 46, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = '#d64541'; ctx.lineWidth = 10; // checkered cloth rim
+  ctx.beginPath(); ctx.arc(1140, 625, 41, 0, Math.PI * 2); ctx.stroke();
+  for (let i = 0; i < 8; i++) {
+    const a = (i / 8) * Math.PI * 2;
+    ctx.fillStyle = '#fdf6e3';
+    ctx.fillRect(1140 + Math.cos(a) * 41 - 5, 625 + Math.sin(a) * 41 - 5, 11, 11);
+  }
+  ctx.fillStyle = '#fdf6e3';
+  ctx.beginPath(); ctx.arc(1140, 625, 32, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#e8b07d'; // tiny plate in the middle
+  ctx.beginPath(); ctx.arc(1140, 625, 10, 0, Math.PI * 2); ctx.fill();
+  // Two stools flanking the table.
+  for (const sx of [1058, 1222]) {
+    ctx.fillStyle = '#8a5a2b';
+    ctx.beginPath(); ctx.arc(sx, 618, 16, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#b5773a';
+    ctx.beginPath(); ctx.arc(sx, 618, 11, 0, Math.PI * 2); ctx.fill();
+  }
+}
+
 function drawStation(ctx, key, k) {
   const s = STATIONS[key];
   const cx = s.x + s.w / 2, cy = s.y + s.h / 2;
@@ -370,6 +634,7 @@ function centerPanel(ctx, w, h) {
 
 export function render(ctx, k) {
   drawFloor(ctx);
+  drawDecor(ctx);
   for (const key of Object.keys(STATIONS)) drawStation(ctx, key, k);
   // Walk-target marker.
   if (k.moveTarget) {
